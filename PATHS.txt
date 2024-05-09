@@ -1,0 +1,6 @@
+ffmpeg=
+bsab=
+install_dir=
+output_dir=
+output_extension=
+translation_map=
