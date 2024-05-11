@@ -53,18 +53,17 @@ def find_skyrim_sounds_bsa_path(install_dir):
         return
 
 def read_translation_map(filepath):
-    if not filepath or filepath == "":
-        filepath = "translation_map_en.csv"
     translation_map = {}
-    try:
-        file = open(filepath, 'r')
-        nextLine = file.readline().strip()
-        while (nextLine):
-            dev_name, friendly_name =  nextLine.split(":")
-            translation_map[dev_name] = friendly_name
-            nextLine = file.readline().strip()
-    except Exception:
-        print("Unable to read translation map provided.")
+    if filepath: 
+        try:
+            with open(filepath, 'r') as file:
+                for line in file:
+                    dev_name, friendly_name =  line.strip().split(":")
+                    translation_map[dev_name] = friendly_name
+        except Exception:
+            print("Unable to read translation map provided.")
+    else:
+        print("Translation map not provided.")
     return translation_map
 
 def main():
@@ -100,7 +99,6 @@ def main():
     # Step 4: Call FFmpeg on each remaining file; convert to selected filetype.
     # Step 5: Rename each piece to its real name.
     translation_map = read_translation_map(paths.get("translation_map"))
-
     name_counter = 0
     total = len(translation_map.keys())
     for folder_path, _, file_names in os.walk(temp_dir):
