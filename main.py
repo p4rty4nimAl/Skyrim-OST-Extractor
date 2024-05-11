@@ -70,16 +70,11 @@ def main():
     paths = get_paths_from_file("PATHS.txt")
     if (not check_requirements_present(paths)):
         return
-    if not paths["output_extension"]:
-        print("output_extension unspecified; exiting")
         return
-    if not paths["output_dir"]:
-        print("output_dir unspecified; exiting")
-        return
-    if not paths["translation_map"]:
-        print("translation_map unspecified; exiting")
-        return
-    # Step 1: Find the 'Skyrim - Sounds.bsa'.
+    for var in ["output_extension", "output_dir", "translation_map"]:
+        if not paths[var]:
+            print(f"{var} unspecified; exiting")
+    # Step 1: Find 'Skyrim - Sounds.bsa'.
     bsaPath = find_skyrim_sounds_bsa_path(paths["install_dir"])
     print(bsaPath)
     # Step 2: Unpack said .bsa to a temporary folder.
@@ -110,4 +105,5 @@ def main():
     # Step 6: Enjoy :)
 
 if __name__ == "__main__":
+    # Can use return to exit the program early.
     main()
