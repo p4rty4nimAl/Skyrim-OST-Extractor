@@ -6,6 +6,7 @@ import tempfile
 import shutil
 
 def get_paths_from_file(filepath):
+    # Read path values from specified file.
     try:
         file = open(filepath, 'r')
         pathsDict = {}
@@ -20,6 +21,7 @@ def get_paths_from_file(filepath):
         return {}
 
 def check_requirements_present(paths):
+    # Check dependencies are accessible
     for program in ["ffmpeg", "bsab"]:
         try:
             if (paths[program] and paths[program] != ""):
@@ -67,6 +69,7 @@ def read_translation_map(filepath):
     return translation_map
 
 def main():
+    # Step 0: Check all required dependencies and values are present
     paths = get_paths_from_file("PATHS.txt")
     if (not check_requirements_present(paths)):
         return
@@ -82,6 +85,10 @@ def main():
     temp_dir = tempfile.mkdtemp()
     exclusionOpts = r"""--exclude "sound\*" --exclude "music\combat\*finale.xwm" --exclude "music\dlc01\explore\soulcairn\palette\*" --exclude "music\dread\*" --exclude "music\explore\*\palette\*" --exclude "music\reveal\*" --exclude "music\reward\*" --exclude "music\special\mus_special*" --exclude "music\special\failure\*" --exclude "music\stinger\*" --exclude "music\mus_levelup_*" --exclude "music\mus_discover_genericlocation*" """
     subprocess.run(f"{paths['bsab']} {exclusionOpts} -e \"{bsaPath}\" \"{temp_dir}\"")
+--exclude "music\\stinger\\*" \
+--exclude "music\\mus_levelup_*" \
+--exclude "music\\mus_discover_genericlocation*"'
+    subprocess.run(f"{paths.get('bsab')} {exclusionOpts} -e \"{bsaPath}\" \"{temp_dir}\"")
     
     # Step 4: Call FFmpeg on each remaining file; convert to selected filetype.
     # Step 5: Rename each piece to its real name.
@@ -92,11 +99,14 @@ def main():
         for filename in file_names:
             relative_path = os.path.relpath(os.path.join(folder_path, filename), start=temp_dir)
             if translation_map[relative_path]:
-                # -n -> skip instead of overwriting
-                # -hide_banner -> makes it quieter
-                # -loglevel fatal -> do not warn about xwm timings being silly
-                # -nostats -> do not care how long it is going to take
-                # -i -> input file
+                # FFmpeg command reasoning:
+                # -n -> If file already exists, do not overwrite it.
+                # Without this option, the script will prompt about name collisions, which are fine to ignore.
+                # "From Past to Present" caused this issue during development.
+                # -hide_banner -> As FFmpeg is invoked for every file, this would cause a significant amount of spam.
+                # -loglevel fatal -> XWM seems to have issues with timings within each file; these can safely be ignored without warning the user.
+                # -nostats -> Presenting stats for how long each individual file will take to convert is unhelpful.
+                # -i -> File being inputted, relative to working directory {temp_dir}
                 return_code = subprocess.run(f"{paths['ffmpeg']} -n -hide_banner -loglevel fatal -nostats -i \"{os.path.join(temp_dir, relative_path)}\" \"{os.path.join(paths['output_dir'], translation_map[relative_path])}.{paths['output_extension']}\"", cwd=temp_dir).returncode
                 i += 1
                 if (return_code == 0):
