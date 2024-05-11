@@ -3,4 +3,4 @@ bsab=
 install_dir=
 output_dir=
 output_extension=
-translation_map=
+translation_map=translation_map_en.csv
