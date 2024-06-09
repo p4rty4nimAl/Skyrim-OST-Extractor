@@ -12,8 +12,8 @@ def get_paths_from_file(filepath):
         with open(filepath, 'r') as file:
             for line in file:
                 line = line.strip()
-                program, location = line.split("=")
-                paths_dict[program] = location
+                key, value = line.split("=")
+                paths_dict[key] = value.replace("\"", "")
     except Exception:
         print(f"Warning: {filepath} is malformed or missing.")
     return paths_dict
@@ -76,8 +76,8 @@ def main():
             print(f"{var} unspecified; exiting")
             return
     # Step 1: Find 'Skyrim - Sounds.bsa'.
-    bsaPath = find_skyrim_sounds_bsa_path(paths["install_dir"])
-    if not bsaPath:
+    bsa_path = paths["bsa_path"] if paths["bsa_path"] is not None else find_skyrim_sounds_bsa_path(paths["install_dir"])
+    if not bsa_path:
         return
     # Step 2: Unpack said .bsa to a temporary folder.
     # Step 3: Locate only the relevant music files; exclusion list in exclusionOpts:
@@ -95,7 +95,7 @@ def main():
 --exclude "music\\stinger\\*" \
 --exclude "music\\mus_levelup_*" \
 --exclude "music\\mus_discover_genericlocation*"'
-    subprocess.run(f"{paths.get('bsab')} {exclusionOpts} -e \"{bsaPath}\" \"{temp_dir}\"")
+    subprocess.run(f"{paths.get('bsab')} {exclusionOpts} -e \"{bsa_path}\" \"{temp_dir}\"")
     # Step 4: Call FFmpeg on each remaining file; convert to selected filetype.
     # Step 5: Rename each piece to its real name.
     translation_map = read_translation_map(paths.get("translation_map"))
