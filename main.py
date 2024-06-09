@@ -94,7 +94,8 @@ def main():
 --exclude "music\\special\\failure\\*" \
 --exclude "music\\stinger\\*" \
 --exclude "music\\mus_levelup_*" \
---exclude "music\\mus_discover_genericlocation*"'
+--exclude "music\\mus_discover_genericlocation*" \
+--exclude "music\\town\\mus_village_*"'
     subprocess.run(f"{paths.get('bsab')} {exclusionOpts} -e \"{bsa_path}\" \"{temp_dir}\"")
     # Step 4: Call FFmpeg on each remaining file; convert to selected filetype.
     # Step 5: Rename each piece to its real name.
