@@ -26,7 +26,7 @@ Alternatively, you can set the path to the .bsa you want to use directly:
 * bsa_path -> Path to desired ".bsa".
 
 To run, simply do `python main.py` in the folder containing this README.  
-You may need to replace `python` with a path to the python executable you have installed.
+You may need to replace `python` with a path to the Python executable you have installed.
 
 Notes:
 * This script is designed for Windows, and may not function correctly on other operating systems, even if compatibility tools are used.
