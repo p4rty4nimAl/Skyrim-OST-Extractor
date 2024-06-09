@@ -117,7 +117,7 @@ def main():
                 return_code = subprocess.run(f"{paths['ffmpeg']} -n -hide_banner -loglevel fatal -nostats -i \"{os.path.join(temp_dir, relative_path)}\" \"{os.path.join(paths['output_dir'], translation_map[relative_path])}.{paths['output_extension']}\"", cwd=temp_dir).returncode
                 name_counter += 1
                 if return_code == 0:
-                    print(f"Wrote {os.path.join(paths['output_dir'], translation_map[relative_path])}.{paths['output_extension']} ({name_counter}/{total})")
+                    print(f"Wrote {os.path.join(paths['output_dir'], translation_map[relative_path])}.{paths['output_extension']} ({name_counter}/{total}|{name_counter/total * 100}%)")
     shutil.rmtree(temp_dir)
     # Step 6: Enjoy :)
 
