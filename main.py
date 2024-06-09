@@ -76,7 +76,7 @@ def main():
             print(f"{var} unspecified; exiting")
             return
     # Step 1: Find 'Skyrim - Sounds.bsa'.
-    bsa_path = paths["bsa_path"] if paths["bsa_path"] is not None else find_skyrim_sounds_bsa_path(paths["install_dir"])
+    bsa_path = paths["bsa_path"] if paths["bsa_path"] else find_skyrim_sounds_bsa_path(paths["install_dir"])
     if not bsa_path:
         return
     # Step 2: Unpack said .bsa to a temporary folder.
